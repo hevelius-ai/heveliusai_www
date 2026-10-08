@@ -51,9 +51,10 @@ jobs:
 
   # Publishes site/ to GitHub Pages. Skipped while the repository is private;
   # it starts working once the site's repository is public and Pages is set to "GitHub Actions".
+  # "Run workflow" on main (Actions tab) also publishes, without needing a new commit.
   deploy:
     needs: checks
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !github.event.repository.private
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main' && !github.event.repository.private
     runs-on: ubuntu-latest
     permissions:
       pages: write
