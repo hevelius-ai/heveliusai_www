@@ -39,17 +39,16 @@ npm run serve    # preview at http://localhost:4173/
 
 1. Check the version on the status line and in the team table against the latest Agile Dev Team release
    (`site/index.html`, and `VERSION` in `tests/site.spec.mjs`).
-2. Replace "GitHub repository: to be updated." with the real link, or remove it.
-3. Replace the evidence illustration with one from a real run, if one is available (keep the "Illustration" caption).
-4. Move the code to the Hevelius repository with GitHub's "Transfer ownership", make it public,
+2. Replace the evidence illustration with one from a real run, if one is available (keep the "Illustration" caption).
+3. Move the code to the Hevelius repository with GitHub's "Transfer ownership", make it public,
    and set Settings → Pages → Source to "GitHub Actions". The `deploy` job in `.github/workflows/site.yml`
    then publishes `site/` on every merge to `main`.
-5. Set the custom domain `heveliusai.com` in Settings → Pages and tick "Enforce HTTPS".
-6. At Porkbun, list the Google Workspace mail records (MX, SPF, DKIM, DMARC) first, then point the apex
+4. Set the custom domain `heveliusai.com` in Settings → Pages and tick "Enforce HTTPS".
+5. At Porkbun, list the Google Workspace mail records (MX, SPF, DKIM, DMARC) first, then point the apex
    (A records 185.199.108.153, 185.199.109.153, 185.199.110.153, 185.199.111.153) and `www` (CNAME to the
    Pages host) to GitHub Pages. Leave the mail records untouched and check them afterwards.
-7. Confirm the live emblem arrives compressed (`content-encoding: gzip` on `/img/emblem.svg`), run a
+6. Confirm the live emblem arrives compressed (`content-encoding: gzip` on `/img/emblem.svg`), run a
    link-preview check on the address, and send a test email to contact@heveliusai.com.
-8. Owner's manual pass: one real iPhone and one real Android phone, portrait and landscape, light and dark;
+7. Owner's manual pass: one real iPhone and one real Android phone, portrait and landscape, light and dark;
    keyboard only on desktop; 200% zoom; a screen reader over the headings and the team table.
-9. Remove the small print under step 2 once version 0.2 is released.
+8. Remove the small print under step 2 once version 0.2 is released.
