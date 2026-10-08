@@ -135,7 +135,8 @@ h1 {
 .btn-quiet { background: transparent; color: var(--fg); border-color: var(--fg); }
 .btn:hover { text-decoration: underline; }
 .btn:active { opacity: 0.8; }
-.plate { order: -1; justify-self: start; width: min(62%, 14rem); }
+/* On phones the emblem follows the buttons, so the headline and its sentence come first. */
+.plate { justify-self: start; width: min(62%, 14rem); }
 .plate img { display: block; width: 100%; height: auto; border-radius: 12px; }
 
 /* Sections */
@@ -231,7 +232,7 @@ td.when { font-family: var(--mono); font-size: var(--step--1); white-space: nowr
 /* Wider screens add columns. */
 @media (min-width: 52rem) {
   .hero .wrap { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); }
-  .plate { order: 0; justify-self: center; width: min(100%, 21rem); }
+  .plate { justify-self: center; width: min(100%, 21rem); }
   .split { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .split-evidence { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); }
   .steps, .services, .site-footer .wrap { grid-template-columns: repeat(3, minmax(0, 1fr)); }

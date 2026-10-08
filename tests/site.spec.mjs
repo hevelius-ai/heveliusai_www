@@ -228,6 +228,15 @@ test("E2-S1-1 and E2-S1-2: the opening names both offers and its buttons lead on
   await expect(page).toHaveURL(/#contact$/);
 });
 
+test("E2-S1-1: on a small phone the headline and its sentence come before the emblem", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  await open(page);
+  const lede = await page.locator(".lede").boundingBox();
+  const emblem = await page.getByRole("img", { name: /Hevelius emblem/ }).boundingBox();
+  expect(lede.y + lede.height).toBeLessThanOrEqual(568);
+  expect(emblem.y).toBeGreaterThan(lede.y + lede.height);
+});
+
 test("E2-S2-1 to E2-S2-3: product status, planned roles and the illustration caption", async ({ page }) => {
   await open(page);
   const status = page.locator('[data-test="status"]');
