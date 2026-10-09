@@ -256,7 +256,7 @@ td.when { font-family: var(--mono); font-size: var(--step--1); white-space: nowr
      above the table's end). It stretches with the table, so rows that wrap differently in another
      browser move both edges together; its width follows its height. */
   .split-team .team-visual { align-self: stretch; display: flex; flex-direction: column; padding: 3.675rem 0 2.625rem; max-width: none; }
-  .split-team .team-visual .orbit-wide { flex: 1 1 0; min-height: 0; width: auto; max-width: 100%; aspect-ratio: 712 / 497; align-self: center; }
+  .split-team .team-visual .orbit-wide { flex: 1 1 0; min-height: 0; width: auto; max-width: 100%; aspect-ratio: 712 / 499; align-self: center; }
 }
 
 /* Team picture. Rings and stars are decoration; meaning is carried by the lines, the "0.2" tags and the caption.
