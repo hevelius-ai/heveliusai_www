@@ -259,7 +259,8 @@ td.when { font-family: var(--mono); font-size: var(--step--1); white-space: nowr
   .split-team .team-visual .orbit-wide { flex: 1 1 0; min-height: 0; width: auto; max-width: 100%; aspect-ratio: 712 / 499; align-self: center; }
 }
 
-/* Team picture. Rings and stars are decoration; meaning is carried by the lines, the "0.2" tags and the caption.
+/* Team picture. Rings and stars are decoration; planned roles are dashed, and the table beside it and
+   the text alternative say so in words (the phone picture also has a caption).
    Lines, outlines and text use --fg and --muted, which pass 3:1 (graphics) and 4.5:1 (text) in both themes. */
 .team-visual { margin: 0; display: grid; gap: 0.75rem; min-width: 0; width: 100%; max-width: 45rem; justify-self: center; }
 .team-visual svg { display: block; width: 100%; height: auto; }
@@ -275,9 +276,6 @@ td.when { font-family: var(--mono); font-size: var(--step--1); white-space: nowr
 .team-visual .tv-you { fill: var(--surface); stroke: var(--fg); stroke-width: 1.5; }
 .team-visual .tv-label { font-family: var(--body); font-weight: 600; font-size: 18px; fill: var(--fg); }
 .team-visual .orbit-wide .tv-label { font-size: 23px; }
-.team-visual .tv-tag { fill: none; stroke: var(--muted); stroke-width: 1; }
-.team-visual .tv-tag-text { font-family: var(--mono); font-size: 16px; fill: var(--muted); }
-.team-visual .orbit-wide .tv-tag-text { font-size: 22px; }
 .team-visual .tv-link { fill: none; stroke: var(--fg); stroke-width: 1.5; }
 .team-visual .tv-link-planned { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 4; }
 .team-visual .tv-arrow { fill: var(--fg); }

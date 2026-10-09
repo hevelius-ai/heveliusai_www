@@ -265,11 +265,10 @@ test("E2-S2-2: the team picture fits the screen, has a text alternative and mark
     await expect(picture).toHaveAttribute("role", "img");
     await expect(picture).toHaveAccessibleName(/Tester and an Analyst are planned for version 0\.2/);
   }
-  // Planned roles are shown by a dashed outline and in words, never by colour alone:
-  // "0.2" tags on the wide picture, the key under the phone picture.
+  // Planned roles are shown by a dashed outline and in words, never by colour alone: the table
+  // and the text alternative say "planned", and the phone picture has a key under it.
   await expect(page.locator(".team-visual figcaption")).toHaveText("Dashed: planned for 0.2");
   await expect(page.locator(".team-visual figcaption")).toBeVisible();
-  await expect(page.locator(".orbit-wide .tv-tag-text")).toHaveText(["0.2", "0.2"]);
   await expect(page.locator(".orbit-wide .tv-node-planned")).toHaveCount(2);
 });
 
