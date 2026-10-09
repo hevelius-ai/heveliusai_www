@@ -65,6 +65,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+      # Browsers keep styles.css and site.js for a while. Naming this release in their
+      # addresses makes every visitor load the files that match the page they got.
+      - name: Tie the stylesheet and script to this release
+        run: |
+          v="${GITHUB_SHA::8}"
+          sed -i "s|href=\"styles.css\"|href=\"styles.css?v=$v\"|; s|src=\"site.js\"|src=\"site.js?v=$v\"|" site/index.html
+          grep -q "styles.css?v=$v" site/index.html && grep -q "site.js?v=$v" site/index.html
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
