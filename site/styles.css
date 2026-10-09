@@ -251,11 +251,13 @@ td.when { font-family: var(--mono); font-size: var(--step--1); white-space: nowr
 }
 @media (min-width: 80rem) {
   .split-team { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  /* Beside the table, the picture lines up with it: "You" on the column-heading row and the
-     Tester and Analyst on the Analyst row (measured: 4.3rem and 25.4rem below the caption's top).
-     The picture is drawn at 0.817 of its 688 x 497 frame. */
-  .split-team .team-visual { align-self: start; padding-top: 3.075rem; max-width: none; }
-  .split-team .team-visual .orbit-wide { width: 35.13rem; height: 25.38rem; margin-inline: auto; }
+  /* Beside the table, the picture lines up with it: the middle of "You" on the column-heading
+     row (a fixed 4.3rem below the caption's top) and the planned Tester and Analyst on the first
+     line of the Analyst row (3.25rem above the table's end). The picture's frame runs exactly
+     between those two lines and stretches with the table, so rows that wrap differently in
+     another browser move both together. "You", the tags and the outer ring draw outside the frame. */
+  .split-team .team-visual { align-self: stretch; display: flex; flex-direction: column; padding: 4.3rem 0 3.25rem; max-width: none; }
+  .split-team .team-visual .orbit-wide { flex: 1 1 0; min-height: 0; width: auto; max-width: none; aspect-ratio: 688 / 413; align-self: center; overflow: visible; }
 }
 
 /* Team picture. Rings and stars are decoration; meaning is carried by the lines, the "0.2" tags and the caption.
