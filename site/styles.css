@@ -1,5 +1,5 @@
 /* Hevelius AI Group, heveliusai.com
-   One calm column (max 68rem), phone first. Each section opens with a small label over a hairline.
+   One calm column (max 80rem), phone first. Each section opens with a small label over a hairline.
    Nothing is fixed to the screen and nothing animates. Colors are tokens; dark follows the system. */
 
 @font-face { font-family: "Montserrat"; font-weight: 600; font-style: normal; font-display: swap; src: url("fonts/montserrat-latin-600-normal.woff2") format("woff2"); }
@@ -92,7 +92,7 @@ a:active { opacity: 0.7; }
 .skip:focus { top: max(1rem, env(safe-area-inset-top)); }
 
 .wrap {
-  max-width: 68rem; margin-inline: auto;
+  max-width: 80rem; margin-inline: auto;
   padding-left: max(var(--gutter), env(safe-area-inset-left));
   padding-right: max(var(--gutter), env(safe-area-inset-right));
 }
