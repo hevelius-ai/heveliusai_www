@@ -273,24 +273,26 @@ test("E2-S2-2: the team picture fits the screen, has a text alternative and mark
   await expect(page.locator(".orbit-wide .tv-node-planned")).toHaveCount(2);
 });
 
-test("E2-S2-2: beside the table, the team picture spans exactly the table's rows", async ({ page }) => {
+test("E2-S2-2: beside the table, the team picture lines up with the table's rows", async ({ page }) => {
+  // "You" sits on the column-heading row; the planned Tester and Analyst sit on the Analyst row.
   for (const width of [1280, 1440, 1920]) {
     await page.setViewportSize({ width, height: 900 });
     await open(page);
     const m = await page.evaluate(() => {
       const table = document.querySelector("#product table");
+      const lineMid = (el) => { const r = document.createRange(); r.selectNodeContents(el); const b = r.getClientRects()[0]; return (b.top + b.bottom) / 2; };
+      const mid = (el) => { const b = el.getBoundingClientRect(); return (b.top + b.bottom) / 2; };
       const svg = document.querySelector(".team-visual .orbit-wide");
       const box = svg.getBoundingClientRect();
-      const vb = svg.viewBox.baseVal;
-      const drawn = vb.height * Math.min(box.width / vb.width, box.height / vb.height);
       return {
-        top: box.top, bottom: box.top + drawn,
-        headLine: table.querySelector("thead").getBoundingClientRect().bottom,
-        tableEnd: table.getBoundingClientRect().bottom,
+        you: mid(svg.querySelector(".tv-you")), headings: lineMid(table.querySelector("thead th")),
+        planned: mid(svg.querySelector(".tv-node-planned")), analyst: lineMid([...table.querySelectorAll("tbody th")].pop()),
+        right: box.right, column: document.querySelector(".team-visual").getBoundingClientRect().right,
       };
     });
-    expect(Math.abs(m.top - m.headLine), `${width}: top`).toBeLessThanOrEqual(2);
-    expect(Math.abs(m.bottom - m.tableEnd), `${width}: bottom`).toBeLessThanOrEqual(2);
+    expect(Math.abs(m.you - m.headings), `${width}: You on the heading row`).toBeLessThanOrEqual(3);
+    expect(Math.abs(m.planned - m.analyst), `${width}: planned roles on the Analyst row`).toBeLessThanOrEqual(3);
+    expect(m.right, `${width}: picture inside its column`).toBeLessThanOrEqual(m.column + 1);
     await expect(page.locator(".team-visual figcaption")).toBeHidden();
   }
 });
