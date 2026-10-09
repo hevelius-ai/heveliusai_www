@@ -337,6 +337,32 @@ test("E2-S2-4: the roles table scrolls inside its own area, by keyboard too", as
   expect(await page.evaluate(layoutProblems)).toEqual([]);
 });
 
+test("E2-S2-4: a box that fits needs no keyboard stop; one that overflows gets it back", async ({ page }) => {
+  // Desktop: both fit, so Tab passes over them.
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await open(page);
+  const boxes = page.locator("section.scroll");
+  await expect(boxes).toHaveCount(2);
+  for (const box of await boxes.all()) await expect(box).not.toHaveAttribute("tabindex");
+  // A narrow window with larger text: the table overflows again and can be reached by keyboard.
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
+  const table = page.locator("section.scroll", { has: page.locator("table") });
+  await expect(table).toHaveAttribute("tabindex", "0");
+  // Back to desktop: the stop goes again.
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.addStyleTag({ content: "html { font-size: 100% !important; }" });
+  await expect(table).not.toHaveAttribute("tabindex");
+});
+
+test("E2-S2-4: with scripts off, both boxes keep their keyboard stop", async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  await page.goto("/");
+  for (const box of await page.locator("section.scroll").all()) await expect(box).toHaveAttribute("tabindex", "0");
+  await context.close();
+});
+
 test("E2-S3-1: advisory lists three offers and makes no certification claim", async ({ page }) => {
   await open(page);
   await expect(page.locator("#advisory .services h3")).toHaveText([
