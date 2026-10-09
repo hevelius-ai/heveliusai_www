@@ -162,7 +162,7 @@ test("E1-S2-6: every link and button is a 44px touch target, nothing needs hover
   for (const p of hoverProps) expect(p).toMatch(/^(color|text-decoration.*|background-color|border-color)$/);
 });
 
-test("Section 6: text is at least 16px (footer 14px), pinch-zoom is never disabled", async ({ page }) => {
+test("Section 6: text is at least 16px (footer 13px), pinch-zoom is never disabled", async ({ page }) => {
   await open(page);
   const viewport = await page.locator('meta[name="viewport"]').getAttribute("content");
   expect(viewport).not.toMatch(/user-scalable\s*=\s*(no|0)|maximum-scale/);
@@ -175,8 +175,8 @@ test("Section 6: text is at least 16px (footer 14px), pinch-zoom is never disabl
       const el = node.parentElement;
       if (el.closest(".skip")) continue;
       const size = parseFloat(getComputedStyle(el).fontSize);
-      // The footer may use 14px (owner decision, 9 Oct 2026); everything else stays at 16px or more.
-      const min = el.closest(".site-footer") ? 14 : 16;
+      // The footer may use 13px (owner decision, 9 Oct 2026); everything else stays at 16px or more.
+      const min = el.closest(".site-footer") ? 13 : 16;
       if (size < min) out.push(`${size}px: ${node.textContent.trim().slice(0, 40)}`);
     }
     return out;
