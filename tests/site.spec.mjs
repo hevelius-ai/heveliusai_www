@@ -275,9 +275,11 @@ test("E2-S2-2: the team picture fits the screen, has a text alternative and mark
 
 test("E2-S2-2: beside the table, the team picture lines up with the table's rows", async ({ page }) => {
   // "You" sits on the column-heading row; the planned Tester and Analyst sit on the Analyst row.
-  for (const width of [1280, 1440, 1920]) {
+  // The last run adds a line to the first row, as a browser that wraps text differently would.
+  for (const [width, extraLine] of [[1280, false], [1440, false], [1920, false], [1280, true]]) {
     await page.setViewportSize({ width, height: 900 });
     await open(page);
+    if (extraLine) await page.evaluate(() => { document.querySelector("#product tbody td").innerHTML += "<br>one more line"; });
     const m = await page.evaluate(() => {
       const table = document.querySelector("#product table");
       const lineMid = (el) => { const r = document.createRange(); r.selectNodeContents(el); const b = r.getClientRects()[0]; return (b.top + b.bottom) / 2; };
@@ -287,12 +289,13 @@ test("E2-S2-2: beside the table, the team picture lines up with the table's rows
       return {
         you: mid(svg.querySelector(".tv-you")), headings: lineMid(table.querySelector("thead th")),
         planned: mid(svg.querySelector(".tv-node-planned")), analyst: lineMid([...table.querySelectorAll("tbody th")].pop()),
-        right: box.right, column: document.querySelector(".team-visual").getBoundingClientRect().right,
+        left: box.left, right: box.right, viewport: document.documentElement.clientWidth,
       };
     });
     expect(Math.abs(m.you - m.headings), `${width}: You on the heading row`).toBeLessThanOrEqual(3);
     expect(Math.abs(m.planned - m.analyst), `${width}: planned roles on the Analyst row`).toBeLessThanOrEqual(3);
-    expect(m.right, `${width}: picture inside its column`).toBeLessThanOrEqual(m.column + 1);
+    expect(m.left, `${width}: picture inside the page`).toBeGreaterThanOrEqual(0);
+    expect(m.right, `${width}: picture inside the page`).toBeLessThanOrEqual(m.viewport);
     await expect(page.locator(".team-visual figcaption")).toBeHidden();
   }
 });
