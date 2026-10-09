@@ -19,6 +19,7 @@
   --accent-fg: #FFFFFF;
   --link: #1B4B8F;
   --silver: #C0C6CF;
+  --orbit: #B9C1CC; /* decorative rings in the team picture */
   --focus: #1B4B8F;
   --display: "Montserrat", "Avenir Next", "Century Gothic", "Segoe UI", Arial, sans-serif;
   --body: "IBM Plex Sans", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -44,6 +45,7 @@
     --accent-fg: #0B1F3A;
     --link: #AFC6F2;
     --focus: #FFD479;
+    --orbit: #3A5478;
     color-scheme: dark;
   }
 }
@@ -143,6 +145,9 @@ h1 {
 main > section { padding-block: clamp(2.5rem, 6vw, 4.5rem); }
 .section-head { display: grid; gap: 0.75rem; margin-bottom: 2rem; max-width: 44rem; }
 .section-head.flush { margin-bottom: 0; }
+/* Product, Advisory and Contact: the hairline runs the full column; the text keeps its reading width. */
+.section-head-full { max-width: none; }
+.section-head-full > :not(.label) { max-width: 44rem; }
 .label {
   font-family: var(--mono); font-size: var(--step--1); font-weight: 500; letter-spacing: 0.1em;
   text-transform: uppercase; color: var(--muted);
@@ -236,7 +241,47 @@ td.when { font-family: var(--mono); font-size: var(--step--1); white-space: nowr
   .hero .wrap { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); }
   .plate { justify-self: center; width: min(100%, 21rem); }
   .split { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .split-evidence { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); }
+  /* The team table and picture sit side by side only when both have room (80rem and up). */
+  .split-team { grid-template-columns: minmax(0, 1fr); }
+  .contact-card { max-width: none; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 1.25rem 3rem; align-items: center; }
+  .contact-card > :first-child { grid-row: 1 / span 2; }
+  .contact-card > :not(:first-child) { grid-column: 2; }
   .steps, .services, .site-footer .wrap { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   tbody th { white-space: nowrap; }
+}
+@media (min-width: 80rem) {
+  .split-team { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: center; }
+}
+
+/* Team picture. Rings and stars are decoration; meaning is carried by the lines, the "0.2" tags and the caption.
+   Lines, outlines and text use --fg and --muted, which pass 3:1 (graphics) and 4.5:1 (text) in both themes. */
+.team-visual { margin: 0; display: grid; gap: 0.75rem; min-width: 0; width: 100%; max-width: 45rem; justify-self: center; }
+.team-visual svg { display: block; width: 100%; height: auto; }
+.team-visual .orbit-narrow { display: none; max-width: 358px; margin-inline: auto; }
+@media (max-width: 37.49rem) {
+  .team-visual .orbit-wide { display: none; }
+  .team-visual .orbit-narrow { display: block; }
+}
+.team-visual figcaption { font-family: var(--mono); font-size: var(--step--1); color: var(--muted); }
+.team-visual .tv-orbit-now { fill: none; stroke: var(--orbit); stroke-width: 1.25; }
+.team-visual .tv-orbit-planned { fill: none; stroke: var(--orbit); stroke-width: 1.25; stroke-dasharray: 3 6; }
+.team-visual .tv-you { fill: var(--surface); stroke: var(--fg); stroke-width: 1.5; }
+.team-visual .tv-label { font-family: var(--body); font-weight: 600; font-size: 18px; fill: var(--fg); }
+.team-visual .tv-tag { fill: none; stroke: var(--muted); stroke-width: 1; }
+.team-visual .tv-tag-text { font-family: var(--mono); font-size: 16px; fill: var(--muted); }
+.team-visual .tv-link { fill: none; stroke: var(--fg); stroke-width: 1.5; }
+.team-visual .tv-link-planned { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 4; }
+.team-visual .tv-arrow { fill: var(--fg); }
+.team-visual .tv-hub { fill: #0B1F3A; }
+.team-visual .tv-hub-ring { fill: none; stroke: var(--orbit); stroke-width: 1.5; }
+.team-visual .tv-node { fill: var(--fg); }
+.team-visual .tv-icon { fill: none; stroke: var(--bg); stroke-width: 2.25; stroke-linecap: round; stroke-linejoin: round; }
+.team-visual .tv-node-planned { fill: var(--bg); stroke: var(--muted); stroke-width: 1.75; stroke-dasharray: 5 4; }
+.team-visual .tv-icon-planned { fill: none; stroke: var(--muted); stroke-width: 2.25; stroke-linecap: round; stroke-linejoin: round; }
+.team-visual .tv-st path { fill: none; stroke: var(--silver); stroke-width: 1; stroke-linecap: round; }
+.team-visual .tv-st .tv-st2 { stroke-width: 0.75; }
+.team-visual .tv-st circle, .team-visual .tv-dot { fill: var(--silver); }
+@media (prefers-color-scheme: dark) {
+  /* The Manager's navy disc would vanish on the navy page; a silver ring keeps it at 9.6:1. */
+  .team-visual .tv-hub-ring { stroke: var(--silver); }
 }

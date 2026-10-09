@@ -255,6 +255,22 @@ test("E2-S2-1 to E2-S2-3: product status, planned roles and the illustration cap
   await expect(page.locator(".evidence figcaption")).toContainText("Illustration");
 });
 
+test("E2-S2-2: the team picture fits the screen, has a text alternative and marks planned roles", async ({ page }) => {
+  for (const [width, shown, hidden] of [[1440, ".orbit-wide", ".orbit-narrow"], [390, ".orbit-narrow", ".orbit-wide"]]) {
+    await page.setViewportSize({ width, height: 900 });
+    await open(page);
+    const picture = page.locator(`.team-visual ${shown}`);
+    await expect(picture).toBeVisible();
+    await expect(page.locator(`.team-visual ${hidden}`)).toBeHidden();
+    await expect(picture).toHaveAttribute("role", "img");
+    await expect(picture).toHaveAccessibleName(/Tester and an Analyst are planned for version 0\.2/);
+  }
+  // Planned roles are shown by a dashed outline and in words, never by colour alone.
+  await expect(page.locator(".team-visual figcaption")).toHaveText("Dashed: planned for 0.2");
+  await expect(page.locator(".orbit-wide .tv-tag-text")).toHaveText(["0.2", "0.2"]);
+  await expect(page.locator(".orbit-wide .tv-node-planned")).toHaveCount(2);
+});
+
 test("E2-S2-4: the roles table scrolls inside its own area, by keyboard too", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 568 });
   await open(page);
