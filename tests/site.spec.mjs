@@ -265,10 +265,34 @@ test("E2-S2-2: the team picture fits the screen, has a text alternative and mark
     await expect(picture).toHaveAttribute("role", "img");
     await expect(picture).toHaveAccessibleName(/Tester and an Analyst are planned for version 0\.2/);
   }
-  // Planned roles are shown by a dashed outline and in words, never by colour alone.
+  // Planned roles are shown by a dashed outline and in words, never by colour alone:
+  // "0.2" tags on the wide picture, the key under the phone picture.
   await expect(page.locator(".team-visual figcaption")).toHaveText("Dashed: planned for 0.2");
+  await expect(page.locator(".team-visual figcaption")).toBeVisible();
   await expect(page.locator(".orbit-wide .tv-tag-text")).toHaveText(["0.2", "0.2"]);
   await expect(page.locator(".orbit-wide .tv-node-planned")).toHaveCount(2);
+});
+
+test("E2-S2-2: beside the table, the team picture spans exactly the table's rows", async ({ page }) => {
+  for (const width of [1280, 1440, 1920]) {
+    await page.setViewportSize({ width, height: 900 });
+    await open(page);
+    const m = await page.evaluate(() => {
+      const table = document.querySelector("#product table");
+      const svg = document.querySelector(".team-visual .orbit-wide");
+      const box = svg.getBoundingClientRect();
+      const vb = svg.viewBox.baseVal;
+      const drawn = vb.height * Math.min(box.width / vb.width, box.height / vb.height);
+      return {
+        top: box.top, bottom: box.top + drawn,
+        headLine: table.querySelector("thead").getBoundingClientRect().bottom,
+        tableEnd: table.getBoundingClientRect().bottom,
+      };
+    });
+    expect(Math.abs(m.top - m.headLine), `${width}: top`).toBeLessThanOrEqual(2);
+    expect(Math.abs(m.bottom - m.tableEnd), `${width}: bottom`).toBeLessThanOrEqual(2);
+    await expect(page.locator(".team-visual figcaption")).toBeHidden();
+  }
 });
 
 test("E2-S2-4: the roles table scrolls inside its own area, by keyboard too", async ({ page }) => {
