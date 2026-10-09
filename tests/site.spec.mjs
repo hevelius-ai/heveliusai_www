@@ -273,8 +273,8 @@ test("E2-S2-2: the team picture fits the screen, has a text alternative and mark
   await expect(page.locator(".orbit-wide .tv-node-planned")).toHaveCount(2);
 });
 
-test("E2-S2-2: beside the table, the team picture lines up with the table's rows", async ({ page }) => {
-  // "You" sits on the column-heading row; the planned Tester and Analyst sit on the Analyst row.
+test("E2-S2-2: beside the table, the whole team picture sits between the heading row and the Analyst row", async ({ page }) => {
+  // Top edge: top of the column-heading text. Bottom edge: bottom of the Analyst row's first line.
   // The last run adds a line to the first row, as a browser that wraps text differently would.
   for (const [width, extraLine] of [[1280, false], [1440, false], [1920, false], [1280, true]]) {
     await page.setViewportSize({ width, height: 900 });
@@ -282,20 +282,27 @@ test("E2-S2-2: beside the table, the team picture lines up with the table's rows
     if (extraLine) await page.evaluate(() => { document.querySelector("#product tbody td").innerHTML += "<br>one more line"; });
     const m = await page.evaluate(() => {
       const table = document.querySelector("#product table");
-      const lineMid = (el) => { const r = document.createRange(); r.selectNodeContents(el); const b = r.getClientRects()[0]; return (b.top + b.bottom) / 2; };
-      const mid = (el) => { const b = el.getBoundingClientRect(); return (b.top + b.bottom) / 2; };
+      const line = (el) => { const r = document.createRange(); r.selectNodeContents(el); return r.getClientRects()[0]; };
       const svg = document.querySelector(".team-visual .orbit-wide");
       const box = svg.getBoundingClientRect();
+      const parts = [...svg.querySelectorAll("rect, circle, text, path")].map((el) => el.getBoundingClientRect()).filter((r) => r.width && r.height);
       return {
-        you: mid(svg.querySelector(".tv-you")), headings: lineMid(table.querySelector("thead th")),
-        planned: mid(svg.querySelector(".tv-node-planned")), analyst: lineMid([...table.querySelectorAll("tbody th")].pop()),
-        left: box.left, right: box.right, viewport: document.documentElement.clientWidth,
+        top: box.top, bottom: box.bottom, left: box.left, right: box.right,
+        headTop: line(table.querySelector("thead th")).top,
+        analystBottom: line([...table.querySelectorAll("tbody th")].pop()).bottom,
+        drawnTop: Math.min(...parts.map((r) => r.top)), drawnBottom: Math.max(...parts.map((r) => r.bottom)),
+        label: parseFloat(getComputedStyle(svg.querySelector(".tv-label")).fontSize) * box.height / svg.viewBox.baseVal.height,
+        viewport: document.documentElement.clientWidth,
       };
     });
-    expect(Math.abs(m.you - m.headings), `${width}: You on the heading row`).toBeLessThanOrEqual(3);
-    expect(Math.abs(m.planned - m.analyst), `${width}: planned roles on the Analyst row`).toBeLessThanOrEqual(3);
-    expect(m.left, `${width}: picture inside the page`).toBeGreaterThanOrEqual(0);
-    expect(m.right, `${width}: picture inside the page`).toBeLessThanOrEqual(m.viewport);
+    const tag = `${width}${extraLine ? " with an extra line" : ""}`;
+    expect(Math.abs(m.top - m.headTop), `${tag}: top on the heading text`).toBeLessThanOrEqual(2);
+    expect(Math.abs(m.bottom - m.analystBottom), `${tag}: bottom on the Analyst line`).toBeLessThanOrEqual(2);
+    expect(m.drawnTop, `${tag}: nothing above the box`).toBeGreaterThanOrEqual(m.top - 1);
+    expect(m.drawnBottom, `${tag}: nothing below the box`).toBeLessThanOrEqual(m.bottom + 1);
+    expect(m.label, `${tag}: names at least 16px`).toBeGreaterThanOrEqual(16);
+    expect(m.left).toBeGreaterThanOrEqual(0);
+    expect(m.right).toBeLessThanOrEqual(m.viewport);
     await expect(page.locator(".team-visual figcaption")).toBeHidden();
   }
 });
