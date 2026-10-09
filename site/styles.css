@@ -23,7 +23,7 @@
   --display: "Montserrat", "Avenir Next", "Century Gothic", "Segoe UI", Arial, sans-serif;
   --body: "IBM Plex Sans", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
-  --step--1: 1rem; /* smallest text on the page: 16px (section 6) */
+  --step--1: 1rem; /* smallest text on the page: 16px (section 6); the footer uses 14px */
   --step-0: 1.0625rem;
   --step-1: 1.25rem;
   --step-3: clamp(min(1.75rem, 8vw), 1.35rem + 1.7vw, 2.375rem);
@@ -218,12 +218,13 @@ td.when { font-family: var(--mono); font-size: var(--step--1); white-space: nowr
 #copy-status { font-size: var(--step--1); color: var(--muted); }
 
 /* Footer */
-.site-footer { border-top: 1px solid var(--rule); font-size: var(--step--1); color: var(--muted); }
+/* The footer is the one exception to the 16px minimum (owner decision, 9 Oct 2026). */
+.site-footer { border-top: 1px solid var(--rule); font-size: 0.875rem; color: var(--muted); }
 .site-footer .wrap {
   display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem 2.5rem;
   padding-top: 2.5rem; padding-bottom: max(2.5rem, env(safe-area-inset-bottom));
 }
-.site-footer h2 { font-family: var(--mono); font-size: var(--step--1); font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg); margin-bottom: 0.5rem; }
+.site-footer h2 { font-family: var(--mono); font-size: 0.875rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg); margin-bottom: 0.5rem; }
 .site-footer div { display: grid; gap: 0.5rem; align-content: start; min-width: 0; }
 .fineprint { grid-column: 1 / -1; border-top: 1px solid var(--rule); padding-top: 1.25rem; }
 
