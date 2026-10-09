@@ -31,6 +31,6 @@ each test name starts with the story code it covers.
 | E4-S3-1 | At most 400 KB downloaded, emblem compressed | Downloaded bytes measured (about 200 KB); live compression confirmed at going live |
 | E4-S3-2 | Content within 2.5 s on a phone on 4G; layout shift at most 0.1 | Lighthouse mobile profile (150 ms, 1.6 Mbit/s, 4x CPU): largest paint and layout shift measured |
 
-Section 6 rules also checked: one `h1` and headings in order, page language, text at least 16 px (14 px in the footer, owner decision 9 Oct 2026),
+Section 6 rules also checked: one `h1` and headings in order, page language, text at least 16 px (13 px in the footer, owner decision 9 Oct 2026),
 pinch-zoom never disabled, focus always visible in a sensible order, reduced motion respected.
 Section 12: the three owner texts are checked word for word.
