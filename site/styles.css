@@ -251,11 +251,11 @@ td.when { font-family: var(--mono); font-size: var(--step--1); white-space: nowr
 }
 @media (min-width: 80rem) {
   .split-team { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  /* Beside the table, the whole picture sits in the box from the top of the column-heading text
-     (3.675rem below the caption's top) to the bottom of the Analyst row's first line (2.625rem
-     above the table's end). It stretches with the table, so rows that wrap differently in another
-     browser move both edges together; its width follows its height. */
-  .split-team .team-visual { align-self: stretch; display: flex; flex-direction: column; padding: 3.675rem 0 2.625rem; max-width: none; }
+  /* Beside the table, the whole picture sits in the box from just under the column-heading text
+     (4.925rem below the caption's top) to the top of the lowercase letters on the table's last line
+     of text (1.837rem above the table's end). It stretches with the table, so rows that wrap
+     differently in another browser move both edges together; its width follows its height. */
+  .split-team .team-visual { align-self: stretch; display: flex; flex-direction: column; padding: 4.925rem 0 1.837rem; max-width: none; }
   .split-team .team-visual .orbit-wide { flex: 1 1 0; min-height: 0; width: auto; max-width: 100%; aspect-ratio: 712 / 499; align-self: center; }
 }
 
@@ -275,7 +275,7 @@ td.when { font-family: var(--mono); font-size: var(--step--1); white-space: nowr
 .team-visual .tv-orbit-planned { fill: none; stroke: var(--orbit); stroke-width: 1.25; stroke-dasharray: 3 6; }
 .team-visual .tv-you { fill: var(--surface); stroke: var(--fg); stroke-width: 1.5; }
 .team-visual .tv-label { font-family: var(--body); font-weight: 600; font-size: 18px; fill: var(--fg); }
-.team-visual .orbit-wide .tv-label { font-size: 23px; }
+.team-visual .orbit-wide .tv-label { font-size: 24px; }
 .team-visual .tv-link { fill: none; stroke: var(--fg); stroke-width: 1.5; }
 .team-visual .tv-link-planned { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 4; }
 .team-visual .tv-arrow { fill: var(--fg); }

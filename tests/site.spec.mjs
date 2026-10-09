@@ -272,31 +272,47 @@ test("E2-S2-2: the team picture fits the screen, has a text alternative and mark
   await expect(page.locator(".orbit-wide .tv-node-planned")).toHaveCount(2);
 });
 
-test("E2-S2-2: beside the table, the whole team picture sits between the heading row and the Analyst row", async ({ page }) => {
-  // Top edge: top of the column-heading text. Bottom edge: bottom of the Analyst row's first line.
-  // The last run adds a line to the first row, as a browser that wraps text differently would.
-  for (const [width, extraLine] of [[1280, false], [1440, false], [1920, false], [1280, true]]) {
+test("E2-S2-2: beside the table, the whole team picture sits between the headings and the last line of text", async ({ page }) => {
+  // Top edge: just under the column-heading text. Bottom edge: the top of the lowercase letters
+  // (the x-height) on the table's last line of text.
+  // Extra lines are added to the first and last rows, as a browser that wraps text differently would.
+  for (const [width, extra] of [[1280, null], [1440, null], [1920, null], [1280, "first"], [1440, "last"]]) {
     await page.setViewportSize({ width, height: 900 });
     await open(page);
-    if (extraLine) await page.evaluate(() => { document.querySelector("#product tbody td").innerHTML += "<br>one more line"; });
+    if (extra) await page.evaluate((which) => {
+      const rows = document.querySelectorAll("#product tbody tr");
+      (which === "first" ? rows[0] : rows[rows.length - 1]).querySelector("td").innerHTML += "<br>one more line";
+    }, extra);
     const m = await page.evaluate(() => {
       const table = document.querySelector("#product table");
-      const line = (el) => { const r = document.createRange(); r.selectNodeContents(el); return r.getClientRects()[0]; };
+      const rects = (el) => { const r = document.createRange(); r.selectNodeContents(el); return [...r.getClientRects()]; };
+      const lastRow = [...table.querySelectorAll("tbody tr")].pop();
       const svg = document.querySelector(".team-visual .orbit-wide");
       const box = svg.getBoundingClientRect();
       const parts = [...svg.querySelectorAll("rect, circle, text, path")].map((el) => el.getBoundingClientRect()).filter((r) => r.width && r.height);
       return {
         top: box.top, bottom: box.bottom, left: box.left, right: box.right,
-        headTop: line(table.querySelector("thead th")).top,
-        analystBottom: line([...table.querySelectorAll("tbody th")].pop()).bottom,
+        headBottom: rects(table.querySelector("thead th"))[0].bottom,
+        lastLine: (() => {
+          const td = lastRow.querySelector("td");
+          const mark = document.createElement("span");
+          mark.style.cssText = "display:inline-block;width:0;height:0;vertical-align:baseline";
+          td.append(mark);
+          const baseline = mark.getBoundingClientRect().bottom;
+          mark.remove();
+          const cs = getComputedStyle(td);
+          const ctx = document.createElement("canvas").getContext("2d");
+          ctx.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+          return baseline - ctx.measureText("x").actualBoundingBoxAscent;
+        })(),
         drawnTop: Math.min(...parts.map((r) => r.top)), drawnBottom: Math.max(...parts.map((r) => r.bottom)),
         label: parseFloat(getComputedStyle(svg.querySelector(".tv-label")).fontSize) * box.height / svg.viewBox.baseVal.height,
         viewport: document.documentElement.clientWidth,
       };
     });
-    const tag = `${width}${extraLine ? " with an extra line" : ""}`;
-    expect(Math.abs(m.top - m.headTop), `${tag}: top on the heading text`).toBeLessThanOrEqual(2);
-    expect(Math.abs(m.bottom - m.analystBottom), `${tag}: bottom on the Analyst line`).toBeLessThanOrEqual(2);
+    const tag = `${width}${extra ? ` with an extra line in the ${extra} row` : ""}`;
+    expect(Math.abs(m.top - m.headBottom), `${tag}: top under the heading text`).toBeLessThanOrEqual(2);
+    expect(Math.abs(m.bottom - m.lastLine), `${tag}: bottom at the top of the last line's lowercase letters`).toBeLessThanOrEqual(2);
     expect(m.drawnTop, `${tag}: nothing above the box`).toBeGreaterThanOrEqual(m.top - 1);
     expect(m.drawnBottom, `${tag}: nothing below the box`).toBeLessThanOrEqual(m.bottom + 1);
     expect(m.label, `${tag}: names at least 16px`).toBeGreaterThanOrEqual(16);
