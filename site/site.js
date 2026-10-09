@@ -27,3 +27,30 @@
     }
   });
 })();
+
+// The evidence example and the roles table scroll sideways when they are wider than the screen,
+// so each has a keyboard stop for scrolling it. Where it fits, the stop does nothing; it is
+// taken out, and put back as soon as the box overflows again (a narrower window, zoom, larger text).
+(function () {
+  var boxes = document.querySelectorAll(".scroll[tabindex]");
+  if (!boxes.length) return;
+
+  function update() {
+    for (var i = 0; i < boxes.length; i++) {
+      var box = boxes[i];
+      if (box.scrollWidth > box.clientWidth) box.setAttribute("tabindex", "0");
+      else if (box !== document.activeElement) box.removeAttribute("tabindex");
+    }
+  }
+
+  update();
+  if (window.ResizeObserver) {
+    var watch = new ResizeObserver(update);
+    for (var i = 0; i < boxes.length; i++) {
+      watch.observe(boxes[i]);
+      if (boxes[i].firstElementChild) watch.observe(boxes[i].firstElementChild);
+    }
+  } else {
+    window.addEventListener("resize", update);
+  }
+})();
