@@ -250,7 +250,11 @@ td.when { font-family: var(--mono); font-size: var(--step--1); white-space: nowr
   tbody th { white-space: nowrap; }
 }
 @media (min-width: 80rem) {
-  .split-team { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: center; }
+  .split-team { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* Beside the table, the picture spans exactly the table's rows: from the line under the
+     column headings (6rem below the caption's top) to the table's last line. */
+  .split-team .team-visual { align-self: stretch; display: flex; flex-direction: column; padding-top: 6rem; max-width: none; }
+  .split-team .team-visual .orbit-wide { flex: 1 1 0; min-height: 0; height: 100%; }
 }
 
 /* Team picture. Rings and stars are decoration; meaning is carried by the lines, the "0.2" tags and the caption.
@@ -261,14 +265,17 @@ td.when { font-family: var(--mono); font-size: var(--step--1); white-space: nowr
 @media (max-width: 37.49rem) {
   .team-visual .orbit-wide { display: none; }
   .team-visual .orbit-narrow { display: block; }
+  figure.team-visual figcaption { display: block; } /* the phone picture has no tags, so the key explains the dashes */
 }
-.team-visual figcaption { font-family: var(--mono); font-size: var(--step--1); color: var(--muted); }
+.team-visual figcaption { display: none; font-family: var(--mono); font-size: var(--step--1); color: var(--muted); }
 .team-visual .tv-orbit-now { fill: none; stroke: var(--orbit); stroke-width: 1.25; }
 .team-visual .tv-orbit-planned { fill: none; stroke: var(--orbit); stroke-width: 1.25; stroke-dasharray: 3 6; }
 .team-visual .tv-you { fill: var(--surface); stroke: var(--fg); stroke-width: 1.5; }
 .team-visual .tv-label { font-family: var(--body); font-weight: 600; font-size: 18px; fill: var(--fg); }
+.team-visual .orbit-wide .tv-label { font-size: 22px; }
 .team-visual .tv-tag { fill: none; stroke: var(--muted); stroke-width: 1; }
 .team-visual .tv-tag-text { font-family: var(--mono); font-size: 16px; fill: var(--muted); }
+.team-visual .orbit-wide .tv-tag-text { font-size: 20px; }
 .team-visual .tv-link { fill: none; stroke: var(--fg); stroke-width: 1.5; }
 .team-visual .tv-link-planned { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 4; }
 .team-visual .tv-arrow { fill: var(--fg); }
