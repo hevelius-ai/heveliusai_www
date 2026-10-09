@@ -210,6 +210,35 @@ test("Section 6: motion follows the reduced-motion setting", async ({ page }) =>
   expect(await page.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior)).toBe("auto");
 });
 
+test("Section 5: headings never split a word across lines", async ({ page }) => {
+  // Desktop Chrome and Edge hyphenate when told to, but the test browser has no hyphenation
+  // dictionary, so the setting itself is checked as well as the lines it produces.
+  for (const width of [320, 360, 390, 430, 768, 1024, 1280, 1440, 1536, 1920]) {
+    await page.setViewportSize({ width, height: 900 });
+    await open(page);
+    const problems = await page.evaluate(() => {
+      const out = [];
+      for (const el of document.querySelectorAll("h1, h2, h3")) {
+        if (!el.offsetParent) continue;
+        if (getComputedStyle(el).hyphens === "auto") out.push(`hyphens: auto on "${el.textContent.trim()}"`);
+        const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+        for (let node; (node = walker.nextNode());) {
+          // A word may break after its own hyphen ("AI-assisted"), never in the middle of a part.
+          for (const m of node.data.matchAll(/[^\s-]+-?/g)) {
+            const range = document.createRange();
+            range.setStart(node, m.index);
+            range.setEnd(node, m.index + m[0].length);
+            const lines = new Set([...range.getClientRects()].filter((r) => r.width).map((r) => Math.round(r.top)));
+            if (lines.size > 1) out.push(`"${m[0]}" split in "${el.textContent.trim()}"`);
+          }
+        }
+      }
+      return out;
+    });
+    expect(problems, `${width}px`).toEqual([]);
+  }
+});
+
 test("Section 6: one main heading and headings in order", async ({ page }) => {
   await open(page);
   await expect(page.locator("h1")).toHaveCount(1);

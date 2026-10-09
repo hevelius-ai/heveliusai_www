@@ -73,7 +73,8 @@ ul, ol { padding: 0; list-style: none; }
 [hidden] { display: none !important; }
 /* One-column grids get an explicit track so a long word never widens the page. */
 .hero-copy, .section-head, .prose, .stack, .block, .steps li, .services > li, .contact-card, .site-footer div { grid-template-columns: minmax(0, 1fr); }
-h1, h2 { hyphens: auto; }
+/* Headings never hyphenate (owner, 9 Oct 2026): a split word in a headline reads badly. */
+h1, h2, h3 { hyphens: manual; }
 
 a { color: var(--link); text-decoration: underline; text-underline-offset: 0.18em; text-decoration-thickness: 0.08em; }
 a:hover { text-decoration-thickness: 0.14em; }
